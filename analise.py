@@ -15,8 +15,12 @@ def getPreco(cod, rodada):
 def getValorizacao(cod, rodada):
     for reg in jogadores[str(cod)]:
         if int(reg['rodada'].split('.')[1])==int(rodada):
-            return reg['preco_variacao']  
-
+            return reg['preco_variacao']
+        
+def getPontuacao(cod, rodada):
+    for reg in jogadores[str(cod)]:
+        if int(reg['rodada'].split('.')[1])==int(rodada):
+            return reg['pontos_ult']  
 
 
 
@@ -33,13 +37,31 @@ for time in selecao.keys():
         pass
 """
 
+
+
+#Relacao Preço do Time pontuacao
+precos=[]
+for time in selecao.keys():
+    
+    try:        
+        selecao_time_rodada_ids=[e['id'] for e in selecao[time]['1'] ]
+        print time, sum(getPreco( cod ,1) for cod in  selecao_time_rodada_ids  ), sum(getPontuacao( cod ,1) for cod in  selecao_time_rodada_ids  )
+        
+    except:
+        pass
+
+
+
+
+
+"""
 for jog_id in jogadores.keys():
     
     if len(jogadores[jog_id])>=1:
         reg=jogadores[jog_id][0]           
         if reg['rodada']=='2015.01' and reg['atleta_jogou']==True: print reg['preco']-reg['preco_variacao'], reg['preco_variacao'] 
   
-
+"""
 
 
 
