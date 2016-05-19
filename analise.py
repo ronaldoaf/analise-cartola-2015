@@ -23,6 +23,30 @@ def getPontuacao(cod, rodada):
             return reg['pontos_ult']  
 
 
+def getMando(cod, rodada):
+    for reg in jogadores[str(cod)]:
+        if int(reg['rodada'].split('.')[1])==int(rodada):
+            return reg['mando']  
+
+def getConfronto(cod, rodada):
+    for reg in jogadores[str(cod)]:
+        if int(reg['rodada'].split('.')[1])==int(rodada):
+            return reg['confronto']
+
+        
+def getPosicao(cod, rodada):
+    for reg in jogadores[str(cod)]:
+        if int(reg['rodada'].split('.')[1])==int(rodada):
+            return reg['posicao'] 
+
+for jog_id in jogadores.keys():
+    try:
+    
+        print jog_id, getPreco(jog_id, 1),getValorizacao(jog_id, 1),getValorizacao(jog_id, 2), getPontuacao(jog_id, 1),getMando(jog_id, 2),getPosicao(jog_id, 2)
+    except:
+        pass
+
+
 
 """
 #Relacao Preço do Time valorização
@@ -38,7 +62,7 @@ for time in selecao.keys():
 """
 
 
-
+"""
 #Relacao Preço do Time pontuacao
 precos=[]
 for time in selecao.keys():
@@ -49,7 +73,7 @@ for time in selecao.keys():
         
     except:
         pass
-
+"""
 
 
 
