@@ -1,0 +1,7 @@
+import json
+
+
+
+with open('jogadores.json') as data_file: jogadores = json.load(data_file)
+with open('selecao.json') as data_file: selecao = json.load(data_file)
+with open('posicoes.json') as data_file: posicoes = json.load(data_file)
