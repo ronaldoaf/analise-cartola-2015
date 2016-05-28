@@ -36,12 +36,12 @@ with open('altletas_que_jogaram_por_rodada2.json', 'w') as  arquivo_saida:
 
 
 
-
+equipes=[]
 for i in range(38):
     rodada_num=i+1
     rodada={}
     for time in times:
-        rodada[time]={'gP':0, 'gC':0, 'mando':False, 'r':''}
+        rodada[time]={'gP':0, 'gC':0, 'mando':False, 'r':0}
     
     for jogador in jogadores[rodada_num-1]:
         time=jogador['time']
@@ -54,9 +54,15 @@ for i in range(38):
             rodada[time_contra]['mando']=not jogador['mando']
             
     
-    
+    for time in rodada.keys():
+        gP=rodada[time]['gP']
+        gC=rodada[time]['gC']
+        rodada[time]['r']=1 if  gP > gC else (-1 if  gP < gC else 0)
 
-    
 
+    equipes+=[rodada]
+
+with open('equipes_por_rodada.json', 'w') as  arquivo_saida:
+    json.dump(equipes, arquivo_saida)
     
 print 'OK'
