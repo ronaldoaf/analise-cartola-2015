@@ -4,8 +4,8 @@ import json
 
 
 with open('jogadores.json') as data_file: jogadores = json.load(data_file)
-with open('selecao.json') as data_file: selecao = json.load(data_file)
-with open('posicoes.json') as data_file: posicoes = json.load(data_file)
+#with open('selecao.json') as data_file: selecao = json.load(data_file)
+#with open('posicoes.json') as data_file: posicoes = json.load(data_file)
 
 def getPreco(cod, rodada):
     for reg in jogadores[str(cod)]:
@@ -39,14 +39,40 @@ def getPosicao(cod, rodada):
         if int(reg['rodada'].split('.')[1])==int(rodada):
             return reg['posicao'] 
 
+
+altletas_que_jogaram_por_rodada=[]
+for i in range(38):
+    num_rodada=i+1
+    rodada=[]
+    for jog_id in jogadores.keys():
+        for partida in jogadores[jog_id]:
+            if int(partida['rodada'].split('.')[1])==num_rodada  and partida['atleta_jogou']:
+                partida['jog_id']=jog_id
+                rodada+=[ partida  ]
+                
+    altletas_que_jogaram_por_rodada+=[rodada]
+    
+with open('altletas_que_jogaram_por_rodada.json', 'w') as  arquivo_saida:
+    json.dump(altletas_que_jogaram_por_rodada, arquivo_saida)
+
+
+
+
+
+
+
+"""
 for jog_id in jogadores.keys():
     try:
     
         print jog_id, getPreco(jog_id, 1),getValorizacao(jog_id, 1),getValorizacao(jog_id, 2), getPontuacao(jog_id, 1),getMando(jog_id, 2),getPosicao(jog_id, 2)
     except:
         pass
+"""
 
+ 
 
+#print json.dumps(jogadores['38140'])
 
 """
 #Relacao Preço do Time valorização
