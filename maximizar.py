@@ -1,14 +1,157 @@
 import json
 
 
-
-with open('altletas_que_jogaram_por_rodada4.json') as data_file: jogadores = json.load(data_file)
+with open('jogadores.json') as data_file: jogadores = json.load(data_file)
+with open('altletas_que_jogaram_por_rodada4.json') as data_file: jogadores2 = json.load(data_file)
 with open('equipes_por_rodada3.json') as data_file: equipes = json.load(data_file)
-#with open('selecao.json') as data_file: selecao = json.load(data_file)
+with open('id-nome-jogadores.json') as data_file: jogadores_ids = json.load(data_file)
+with open('selecao.json') as data_file: selecao = json.load(data_file)
 #with open('posicoes.json') as data_file: posicoes = json.load(data_file)
 
 times=['atl', 'ava', 'cam', 'cfc', 'cha', 'cor', 'cru', 'fig', 'fla', 'flu', 'goi', 'gre', 'int', 'jec', 'pal', 'pon', 'san', 'sao', 'spt', 'vas']
 
+
+def getNomeJogadorPorId(jog_id):
+    for  jog in jogadores_ids:
+        if int(jog['id'])==int(jog_id): return jog['nome']
+
+def getPontuacao(cod, rodada):
+    for reg in jogadores[str(cod)]:
+        if int(reg['rodada'].split('.')[1])==int(rodada):
+            return reg['pontos_ult']  
+
+
+"""
+soma_pontos=0
+for i in range(38):
+    for sel in selecao['enzobrinho'][str(i+1)]:
+        try:
+            soma_pontos+=getPontuacao(sel['id'], str(i+1))
+        except:
+            print sel
+print soma_pontos
+"""
+
+
+
+
+def getJog(cod, rodada):
+    for jog in jogadores2[rodada-1]:
+        if jog['jog_id']==str(cod): return jog
+
+
+def dif(obj,scout):
+    return obj[scout+'_total']-obj[scout+'_rodada']
+
+rod=10
+
+for jog in jogadores2[rod-1]:
+    print '"'+getNomeJogadorPorId(jog['jog_id'])+'"', jog['media_ant'], jog['posicao'], jog['mando']
+
+x=1/0
+
+
+rod=10
+
+a=getJog('73649',rod)
+b=getJog('38957',rod)
+
+print 'media', a['media_ant'], b['media_ant']
+print 'pontos_ant', a['pontos_ant'], b['pontos_ant']
+print 'SG', dif(a,'SG'), dif(b,'SG')
+print 'RB', dif(a,'RB')/(a['num_jogos']-1.0), dif(b,'RB')/(a['num_jogos']-1.0)
+print 'FC', dif(a,'FC'), dif(b,'FC')
+print 'FD', dif(a,'FD'), dif(b,'FD')
+print 'FF', dif(a,'FF'), dif(b,'FF')
+print 'PE', dif(a,'PE'), dif(b,'PE')
+print 'A', dif(a,'A'), dif(b,'A')
+print 'G', dif(a,'G'), dif(b,'G')
+print 'Mando', int(a['mando']), int(b['mando'])
+#a=jogadores['50427'][rod-1]
+#b=jogadores['69014'][rod-1]
+
+
+print getPontuacao('50427',rod), getPontuacao('69014',rod)
+
+
+
+x=1/0
+
+
+pos={'GOL':[],'LAT':[],'ZAG':[],'MEI':[],'ATA':[],'TEC':[]}
+rodada='10'
+for nome_time in selecao:
+    if rodada in selecao[nome_time]:
+        for jog in selecao[nome_time][rodada]:
+            try:
+                pos[jog['posicao']]+=[jog['id']]
+            except:
+                jog
+
+
+
+for posicao in ['GOL', 'LAT', 'ZAG', 'MEI', 'ATA', 'TEC']:
+    print posicao
+    num=len(pos[posicao])
+    freq_pos=[]
+    for jog_id in list(set(pos[posicao])):
+        freq_pos+=[[ jog_id, sum(1.0 for i in pos[posicao] if i==jog_id)/num]]
+
+    if posicao=='GOL': k=1
+    if posicao=='LAT': k=2
+    if posicao=='ZAG': k=2
+    if posicao=='MEI': k=3
+    if posicao=='ATA': k=3
+    if posicao=='TEC': k=1
+
+    for reg in sorted(freq_pos, key=lambda x: x[1], reverse=True)[:k]:
+        print getNomeJogadorPorId(reg[0]), str(100*round(reg[1],4))+'%'
+        #soma_pontos+=getPontuacao(reg[0], rodada)
+
+
+
+
+
+"""
+soma_pontos=0
+for i in range(38):
+    pos={'GOL':[],'LAT':[],'ZAG':[],'MEI':[],'ATA':[],'TEC':[]}
+    rodada=str(i+1)
+    for nome_time in selecao:
+        if rodada in selecao[nome_time]:
+            for jog in selecao[nome_time][rodada]:
+                try:
+                    pos[jog['posicao']]+=[jog['id']]
+                except:
+                    print jog
+
+
+
+    for posicao in ['GOL', 'LAT', 'ZAG', 'MEI', 'ATA', 'TEC']:
+        #print posicao
+        num=len(pos[posicao])
+        freq_pos=[]
+        for jog_id in list(set(pos[posicao])):
+            freq_pos+=[[ jog_id, sum(1.0 for i in pos[posicao] if i==jog_id)/num]]
+
+        if posicao=='GOL': k=1
+        if posicao=='LAT': k=2
+        if posicao=='ZAG': k=2
+        if posicao=='MEI': k=3
+        if posicao=='ATA': k=3
+        if posicao=='TEC': k=1
+        
+        for reg in sorted(freq_pos, key=lambda x: x[1], reverse=True)[:k]:
+            #print getNomeJogadorPorId(reg[0]), str(100*round(reg[1],4))+'%'
+            soma_pontos+=getPontuacao(reg[0], rodada)
+
+print soma_pontos 
+"""
+
+
+      
+#for jog in selecao['enzosobrinho']['2']:
+#    print jog['posicao'], '|', getNomeJogadorPorId(jog['id'])
 
 """
 for cartola in selecao.keys:
@@ -23,7 +166,7 @@ for cartola in selecao.keys:
 
 
 
-
+"""
 
 
 soma_total=0
@@ -62,7 +205,7 @@ print soma_total
 #    jog['pontos_ult']
 
 
-
+"""
 
 
 
