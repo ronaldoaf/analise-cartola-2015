@@ -44,9 +44,17 @@ def dif(obj,scout):
     return obj[scout+'_total']-obj[scout+'_rodada']
 
 rod=10
-
+"""
 for jog in jogadores2[rod-1]:
     print '"'+getNomeJogadorPorId(jog['jog_id'])+'"', jog['media_ant'], jog['posicao'], jog['mando']
+
+
+"""
+
+for equipe_nome in equipes[rod-2].keys():
+    print equipe_nome, equipes[equipe_nome]['G_contra_total']
+
+
 
 x=1/0
 
