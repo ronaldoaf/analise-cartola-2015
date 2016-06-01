@@ -1,11 +1,11 @@
 import json
 
 with open('odds.json') as data_file: odds = json.load(data_file)
-with open('jogadores.json') as data_file: jogadores = json.load(data_file)
+#with open('jogadores.json') as data_file: jogadores = json.load(data_file)
 with open('altletas_que_jogaram_por_rodada4.json') as data_file: jogadores2 = json.load(data_file)
 with open('equipes_por_rodada3.json') as data_file: equipes = json.load(data_file)
-with open('id-nome-jogadores.json') as data_file: jogadores_ids = json.load(data_file)
-with open('selecao.json') as data_file: selecao = json.load(data_file)
+#with open('id-nome-jogadores.json') as data_file: jogadores_ids = json.load(data_file)
+#with open('selecao.json') as data_file: selecao = json.load(data_file)
 #with open('posicoes.json') as data_file: posicoes = json.load(data_file)
 
 times=['atl', 'ava', 'cam', 'cfc', 'cha', 'cor', 'cru', 'fig', 'fla', 'flu', 'goi', 'gre', 'int', 'jec', 'pal', 'pon', 'san', 'sao', 'spt', 'vas']
@@ -74,7 +74,91 @@ def ranks(lista, inverte=False):
     return [seq.index(v) for v in lista]
 
 
+def p(posicao):
+    if posicao=='goleiro': return 'GOL'
+    if posicao=='lateral': return 'LAT'
+    if posicao=='zagueiro': return 'ZAG'
+    if posicao=='meia': return 'MEI'
+    if posicao=='atacante': return 'ATA'
+    if posicao=='tecnico': return 'TEC'
 
+
+
+soma_total=0
+for i in range(4,38):
+    rod=i+1
+    posParms={'GOL':[],'LAT':[],'ZAG':[],'MEI':[],'ATA':[], 'TEC':[]}
+
+    for jog in jogadores2[rod-1]:
+        
+        if not jog['posicao']=='tecnico':
+            n=jog['num_jogos']
+            parms={'id' : jog['jog_id'],
+                   'media': jog['media_ant'],
+                   'pontos_ant': jog['pontos_ant'],
+                   'RB': dif(jog, 'RB')/n,
+                   'FD': dif(jog, 'RB')/n,
+                   'FF': dif(jog, 'FF')/n,
+                   'FC': dif(jog, 'FC')/n,
+                   'FS': dif(jog, 'FS')/n,
+                   'CA': dif(jog, 'CA')/n,
+                   'G': dif(jog, 'G')/n,
+                   'A': dif(jog, 'A')/n,
+                   'I': dif(jog, 'I')/n,
+                   'DD': dif(jog, 'DD')/n,
+                   'SG': dif(jog, 'SG')/n,
+                   'GS': dif(jog, 'GS')/n,
+                   'PE': dif(jog, 'PE')/n,
+                   'mando':jog['mando'],
+                   'prob':getProbVitoriaEquipe(jog['time'], rod),
+                   'pontos':jog['pontos_ult'] }        
+        else:
+            parms={'id' : jog['jog_id'],
+                   'media': jog['media_ant'],
+                   'pontos_ant': jog['pontos_ant'],
+                   'mando':jog['mando'],
+                   'prob':getProbVitoriaEquipe(jog['time'], rod),
+                   'pontos':jog['pontos_ult'] }    
+
+        posParms[p( jog['posicao'] )]+=[parms]
+
+    for pos_nome in posParms.keys():
+        num=len(posParms[pos_nome])
+        inc=1.0/num
+        for parm in posParms[pos_nome][0].keys():
+            if parm not in ['id', 'mando', 'pontos']:
+                posParms[pos_nome].sort(key=lambda x: x[parm])
+                for i in range(len(posParms[pos_nome])): posParms[pos_nome][i][parm]=i*inc
+
+    posParms['TEC'].sort(key=lambda x: x['prob'])
+    posParms['ZAG'].sort(key=lambda x: x['prob'] + x['RB'] -3*x['FC'] )
+    posParms['LAT'].sort(key=lambda x: x['prob'] + x['RB'] )
+    
+    posParms['MEI'].sort(key=lambda x: x['prob'] + 1.3*x['RB'] )
+    posParms['ATA'].sort(key=lambda x: x['prob'] + x['media'] +2*x['G'])
+
+    posParms['GOL'].sort(key=lambda x: x['prob'] +3*x['DD'] - x['CA'])
+
+    
+    soma_total+=posParms['GOL'][-1]['pontos']
+    
+    soma_total+=posParms['LAT'][-1]['pontos']
+    soma_total+=posParms['LAT'][-2]['pontos']
+    
+    soma_total+=posParms['ZAG'][-1]['pontos']
+    soma_total+=posParms['ZAG'][-2]['pontos']
+    
+    soma_total+=posParms['MEI'][-1]['pontos']
+    soma_total+=posParms['MEI'][-2]['pontos']
+    soma_total+=posParms['MEI'][-3]['pontos']
+    
+    soma_total+=posParms['ATA'][-1]['pontos']
+    soma_total+=posParms['ATA'][-2]['pontos']
+    soma_total+=posParms['ATA'][-3]['pontos']
+    
+    soma_total+=posParms['TEC'][-1]['pontos']
+
+print round(soma_total*38/34,2)
 """
 
 rod=18
@@ -140,7 +224,7 @@ print getPontuacao('50427',rod), getPontuacao('69014',rod)
 
 x=1/0
 """
-
+"""
 pos={'GOL':[],'LAT':[],'ZAG':[],'MEI':[],'ATA':[],'TEC':[]}
 rodada='21'
 for nome_time in selecao:
@@ -172,7 +256,7 @@ for posicao in ['GOL', 'LAT', 'ZAG', 'MEI', 'ATA', 'TEC']:
         #soma_pontos+=getPontuacao(reg[0], rodada)
 
 
-
+"""
 
 
 """
