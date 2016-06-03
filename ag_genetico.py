@@ -3,7 +3,7 @@ from AG import populacao
 import json
 import time
 import cPickle as pickle 
-
+from random import random
 
 
 with open('odds.json') as data_file: odds = json.load(data_file)
@@ -97,6 +97,7 @@ def p(posicao):
 
 
 
+samples=[ sorted(range(34), key=lambda x: random())[:17]   for i in range(100)  ]
 
 
 
@@ -113,11 +114,10 @@ def valor(codigo_genetico):
     n_partes=2**n_bits
     vs=[intToFloat(e,p_min,p_max,n_partes) for e in binStringToIntList(codigo_genetico,n_bits)]
 
-
-    #print vs
+    print vs
     #vs=[0.65, 1.55, 1.15, 1.5, 1.3, 1.89, 1.7875, 0.7375, 0.8125]
-    soma_total=0
-    for i in range(22,38):
+    somas=[]
+    for i in range(4,38):
         rod=i+1
         posParms={'GOL':[],'LAT':[],'ZAG':[],'MEI':[],'ATA':[], 'TEC':[]}
 
@@ -171,7 +171,7 @@ def valor(codigo_genetico):
 
         posParms['GOL'].sort(key=lambda x: vs[45]*x['prob'] + vs[46]*x['media'] + vs[47]*x['DD'] + vs[48]*x['SG'] + vs[49]*x['GS'] + vs[50]*x['FC'] + vs[51]*x['CA'])
 
-        
+        soma_total=0
         soma_total+=posParms['GOL'][-1]['pontos']
         
         soma_total+=posParms['LAT'][-1]['pontos']
@@ -190,19 +190,27 @@ def valor(codigo_genetico):
         
         soma_total+=posParms['TEC'][-1]['pontos']
 
-    return round(soma_total*38/16,2)
+        somas+=[soma_total]
+
+    resultado=0
+    for sample in samples:
+        resultado+=sum(somas[pos] for pos in sample)**2
 
 
+    return sum(somas)
+    return resultado**0.5
+    #return round(soma_total*38/16,2)
 
 
+print valor('1111101111000111100111111111111101011001000010110101001101011001100000101010000011011010000011101100111000000000011011101111011001010111110110010111001011001101010111101011111011000010110110101011101101000001100101111001001100100001111111101100111110000001101100111100001001010110101100010011101110101100110011001001111011100001011010101101111011110100100100101100010011000000100100110110000010011111010100010010100100110110')
+#print valor('1011110110001101011110110110010011101101010101001100001011110101101010011011001011111010110011010100000110010101001100101110101000100010101010000110010111000101010000001110001011000111111001111111000110000110011111011111010001101010010100001111100010110000101100111111100000111010111000100000111011001000111100011000101110100111010101100111000111110100100000100111011011001010110011011010010011000010101101010000001110011001')
+x=1/0
 #codigo_genetico='101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101101'
 #n_partes=2**n_bits
 #vs=[intToFloat(e,p_min,p_max,n_partes) for e in binStringToIntList(codigo_genetico,n_bits)]
 
 
-print valor('1010011011010001111000100110110011000110000111100111111111100110011110001100011111010010110000001101100001111110110010111110011010011101000010100101010011000011011000001100011110111011011100001100000011100100010001001101010111110000000000001100110110001101100110101110110011111110111100110110110101001000011110100010000110110010000110011001111011111101100101011111101011000000011111110110110011110011111011111111001111110001')
 
-quit()
 
 
 pop=populacao(funcao_aptidao=valor, \
@@ -217,7 +225,7 @@ pop=populacao(funcao_aptidao=valor, \
 
 start_time = time.time()
 
-for i in range(50):
+for i in range(100):
     print i, media([e.aptidao for e in pop.indiv])
     pop.evolucao(1)
 
@@ -228,7 +236,7 @@ print pop.indiv[0].codigo_genetico
 
 
 
-pickle.dump( pop,open( "pop.pickle", "wb" ) )
+pickle.dump( pop,open( "pop3.pickle", "wb" ) )
 
 # your code
 elapsed_time = time.time() - start_time

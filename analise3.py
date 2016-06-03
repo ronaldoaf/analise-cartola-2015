@@ -10,6 +10,26 @@ with open('selecao.json') as data_file: selecao = json.load(data_file)
 times=['atl', 'ava', 'cam', 'cfc', 'cha', 'cor', 'cru', 'fig', 'fla', 'flu', 'goi', 'gre', 'int', 'jec', 'pal', 'pon', 'san', 'sao', 'spt', 'vas']
 
 
+for rod in range(len(equipes)):
+    for nome_time in equipes[rod]:
+        if 'vitorias' not in  equipes[rod][nome_time]:
+            equipes[rod][nome_time]['vitorias']=0
+            equipes[rod][nome_time]['empates']=0
+            equipes[rod][nome_time]['derrotas']=0
+            equipes[rod][nome_time]['pontos']=0
+            
+        equipes[rod][nome_time]['vitorias']+=1 if equipes[rod][nome_time]['r']==1 else 0
+        equipes[rod][nome_time]['empates']+=1 if equipes[rod][nome_time]['r']==0 else 0
+        equipes[rod][nome_time]['derrotas']+=1 if equipes[rod][nome_time]['r']==-1 else 0
+        equipes[rod][nome_time]['pontos']+=3 if equipes[rod][nome_time]['r']==1 else (1 if equipes[rod][nome_time]['r']==0 else 0 )
+
+
+
+
+with open('equipes_por_rodada4.json', 'w') as  arquivo_saida:
+    json.dump(equipes, arquivo_saida)
+
+    
 """
 for cartola in selecao.keys:
     for rod in selecao[cartola].kesy():
@@ -20,7 +40,7 @@ for cartola in selecao.keys:
 
 
 
-
+"""
 
 
 print 'jog_id num_jogos DD SG pontos_ant media_ant mando G_sofridos FD_sofridos FF_sofridos G_feito_adversario FD_feito_adversario FF_feito_adversario pontos'
@@ -45,6 +65,10 @@ for i in range(4,38):
                     1.0*(equipes[rodada_num-1][jog['time_contra']]['FD_total']-equipes[rodada_num-1][jog['time_contra']]['FD_rodada'])/rodada_num, \
                     1.0*(equipes[rodada_num-1][jog['time_contra']]['FF_total']-equipes[rodada_num-1][jog['time_contra']]['FF_rodada'])/rodada_num, \
                     jog['pontos_ult']
+
+
+
+"""
 
 
 
